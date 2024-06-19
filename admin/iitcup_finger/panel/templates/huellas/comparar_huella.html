@@ -1,0 +1,111 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+
+<!-- page content -->
+<div class="right_col" role="main">
+  <h1>Comparar Huellas</h1>
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Selecciona una huella <small>(para buscarla en la base de datos)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container ">
+          <div class="col-md-6">
+            <label class="col-form-label col-md-12 col-sm-3 ">Selecciona una Huella</label>
+            <input class="form-control" type="file" id="imageInput" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="col-form-label col-md-12 col-sm-3 ">Selecciona una Huella</label>
+            <input class="form-control" type="file" id="imageInput" class="form-control">
+          </div>
+          <br></br>
+          <div class="row">
+              <div class="col-md-6">
+                <div class="border img-container" style="width: 100%; height: 500px;">
+                  <!-- Imagen Original -->
+                  <img id="originalImage" src="#" alt="Imagen Original" style="max-width: 100%; max-height: 500px; display: none;">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border img-container" style="width: 100%; height: 500px;">
+                  <!-- Imagen Procesada -->
+                  <img id="processedImage" src="#" alt="Imagen Procesada" style="max-width: 100%; max-height: 500px; display: none;">
+                </div>
+              </div>
+              
+
+              
+          </div>
+      
+      </div>
+      
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mostrar imagen seleccionada
+  document.getElementById('imageInput').onchange = function(event) {
+      var reader = new FileReader();
+      reader.onload = function(){
+          var output = document.getElementById('originalImage');
+          output.src = reader.result;
+          output.style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
+  };
+  function buscarYDesplegarResultados() {
+    // Aquí iría tu lógica para buscar las huellas dactilares...
+    
+    // Después de buscar, despliega el panel de resultados
+    var panelResultados = document.getElementById('panelResultados');
+    panelResultados.classList.remove('collapsed'); // Asumiendo que 'collapsed' es la clase que controla esto
+    panelResultados.style.display = 'block'; // O ajusta este estilo según sea necesario
+  }
+  
+  // Procesar y mostrar imagen
+  function processImage() {
+      var file = document.getElementById('imageInput').files[0];
+      var formData = new FormData();
+      formData.append('imagen', file);
+      formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+      fetch('{% url "procesar_imagen" %}', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+          document.getElementById('processedImage').src = 'data:image/png;base64,' + data['imagen'];
+          document.getElementById('processedImage').style.display = 'block';
+          document.getElementById('inputNumeroPuntos').value = data['puntos'];
+          document.getElementById('NumeroPuntos').value = data['cantidad_puntos'];
+      })
+      .catch(error => console.error('Error:', error));
+  }
+  function limpiarCampos() {
+    // Limpia cada campo de entrada por su ID o cualquier selector
+    document.getElementById('originalImage').style.display = 'none';
+    document.getElementById('processedImage').style.display = 'none';
+    document.getElementById('imageInput').value = '';
+    document.getElementById('NumeroPuntos').value = '';
+    document.getElementById('inputNumeroPuntos').value = '';
+  }
+ 
+  document.getElementById('ver').addEventListener('click', function() {
+    var imgOriginal = document.getElementById('imagenOriginal');
+    imgOriginal.src = '../media/procesada/procesada_img4.jpg'; 
+    imgOriginal.style.display = 'block';
+});
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+<!-- pdf_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            padding: 20px;
+        }
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .image-container img {
+            max-width: 45%;
+            max-height: 300px;
+        }
+        .info {
+            margin-top: 20px;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img src="{{ imagen_original }}" alt="Imagen Original">
+            <img src="{{ imagen_procesada }}" alt="Imagen Procesada">
+        </div>
+        <div class="info">
+            <p>Número de puntos: {{ numero_puntos }}</p>
+            <p>Cantidad de coincidencias: {{ cantidad_coincidencias }}</p>
+            <p>Porcentaje de coincidencia: {{ porcentaje_coincidencia }}</p>
+        </div>
+    </div>
+</body>
+</html>

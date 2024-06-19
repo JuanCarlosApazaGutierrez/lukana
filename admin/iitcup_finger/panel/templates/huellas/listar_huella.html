@@ -1,0 +1,230 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <h1>Lista de huellas</h1>
+        <div class="col-md-12 col-sm-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Base de datos <small>Huellas dactilares</small></h2>
+                    <div class="d-flex justify-content-end">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                    {% if page_obj %}
+                    <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Codigo de Huella</th>
+                                <th>Codigo de Caso</th>
+                                <th>Registro</th>
+                                <th>C.I. Persona</th>
+                                <th>Imagen</th>
+                                <th>Imagen procesada</th>
+                                <th>Puntos Caracteristicos</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            {% for h in page_obj %}
+                            <tr>
+                                <th scope="row">{{ h.id_huella }}</th>
+                                <td>{{ h.caso }}</td>
+                                <td>{{ h.f_registro }}</td>
+                                <td>{{ h.persona }}</td>
+                                <td class="text-center"><img src="../media/{{ h.original_image }}" alt="No Encontrada" class="img-thumbnail" style="max-height: 70px; max-width: 70px;" data-toggle="modal" data-target="#imageModal" data-image-src="../media/{{ h.original_image }}"/></td>
+                                <td class="text-center"><img src="../media/{{ h.procesada_image }}" alt="No Encontrada" class="img-thumbnail" style="max-height: 70px; max-width: 70px;" data-toggle="modal" data-target="#imageModal" data-image-src="../media/{{ h.procesada_image }}"/></td>
+                                <td class="text-center"><img src="../media/{{ h.minutiae_image }}" alt="No Encontrada" class="img-thumbnail" style="max-height: 70px; max-width: 70px;" data-toggle="modal" data-target="#imageModal" data-image-src="../media/{{ h.minutiae_image }}"/></td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm btn-toggle-activate" data-id-caso="{{ h.id_huella }}" data-activate="{{ h.activate }}" style="color: {{ h.activate|yesno:'white,white' }};">
+                                        <i class="fa {{ h.activate|yesno:'fa-check,fa-close' }}"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <h4 class="text-center text-danger">
+                        No Hay Registros para mostrar!!
+                    </h4>
+                    {% endif %}
+
+                    <!-- Paginación -->
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1">&laquo; primera</a>
+                                <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                            </span>
+
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">siguiente</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Imagen de la Huella</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid" height="300px" alt="Imagen de la Huella"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .img-thumbnail {
+            margin: auto; /* Para centrar la imagen */
+            display: block; /* Para hacer que la imagen ocupe todo el ancho disponible */
+        }
+
+        .pagination {
+            display: flex;
+            margin-top: 20px;
+        }
+        .pagination .step-links {
+            display: flex;
+            list-style: none;
+            padding: 0;
+        }
+        .pagination .step-links a, .pagination .step-links span {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #000000;
+        }
+        .pagination .step-links a:hover {
+            background-color: #f1f1f1;
+        }
+        .pagination .step-links .current {
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Event listener for image click to open modal with larger image
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+
+            document.querySelectorAll('.img-thumbnail').forEach(img => {
+                img.addEventListener('click', function() {
+                    const imageUrl = this.getAttribute('data-image-src');
+                    modalImage.setAttribute('src', imageUrl);
+                });
+            });
+
+            const botones = document.querySelectorAll('.btn-toggle-activate');
+
+            botones.forEach(boton => {
+                boton.addEventListener('click', function() {
+                    const idCaso = this.getAttribute('data-id-caso');
+                    const estadoActual = this.getAttribute('data-activate') === 'true';
+                    const nuevoEstado = !estadoActual;
+
+                    fetch(`/huella/cambiar_estado_huella/${idCaso}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 'activate': nuevoEstado })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.setAttribute('data-activate', nuevoEstado);
+                            const icon = this.querySelector('i');
+                            if (nuevoEstado) {
+                                icon.classList.replace('fa-close', 'fa-check');
+                                this.style.color = 'white';
+                            } else {
+                                icon.classList.replace('fa-check', 'fa-close');
+                                this.style.color = 'white ';
+                            }
+                        } else {
+                            console.error('Error al cambiar el estado.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+
+            // Search filter
+            document.getElementById('searchInput').addEventListener('input', function() {
+                filterTable();
+            });
+
+            
+
+            function filterTable() {
+                const searchValue = document.getElementById('searchInput').value.toLowerCase();
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const tableBody = document.getElementById('tableBody');
+                const rows = tableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td, th');
+                    const rowData = Array.from(cells).map(cell => cell.innerText.toLowerCase());
+                    const fechaRegistro = cells[2].innerText;
+                    let showRow = rowData.some(data => data.includes(searchValue));
+
+                    if (startDate) {
+                        const startDateObj = new Date(startDate);
+                        const rowDateObj = new Date(fechaRegistro);
+                        showRow = showRow && rowDateObj >= startDateObj;
+                    }
+
+                    if (endDate) {
+                        const endDateObj = new Date(endDate);
+                        const rowDateObj = new Date(fechaRegistro);
+                        showRow = showRow && rowDateObj <= endDateObj;
+                    }
+
+                    row.style.display = showRow ? '' : 'none';
+                });
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,293 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+<!-- page content -->
+<div class="right_col" role="main">
+  <h1>Buscar Coincidencias</h1>
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Selecciona una huella <small>(para buscarla en la base de datos)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container ">
+          <div class="col-md-4">Huella Original</div>
+          <div class="col-md-4">Huella Procesada</div>
+          <div class="col-md-4">.</div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="border img-container" style="width: 100%; height: 500px;">
+                <!-- Imagen Original -->
+                <img id="originalImage" src="#" alt="Imagen Original" style="max-width: 100%; max-height: 500px; display: none;">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="border" style="width: 100%; height: 500px;">
+                <!-- Imagen Procesada -->
+                <img id="processedImage" src="#" alt="Imagen Procesada" style="max-width: 100%; max-height: 500px; display: none;">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="col-form-label col-md-12 col-sm-3 ">Selecciona una Huella</label>
+              <div class="mb-3">
+                <input class="form-control" type="file" id="imageInput" class="form-control">
+              </div>
+              <div class="mb-3">
+                <button onclick="processImage()" class="btn btn-primary btn-block">Cargar y Procesar Huella Dactilar</button>
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3 ">Nucleo de la Huella</label>
+              <div class="mb-3">
+                <input type="text" id="inputNumeroPuntos" class="form-control" placeholder="Coordenadas">
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3 ">Cantidad de puntos</label>
+              <div class="mb-3">
+                <input type="text" id="NumeroPuntos" class="form-control" placeholder="Cantidad encontrada">
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3 ">Tipo de huella</label>
+              <div class="mb-3">
+                <input type="text" id="tipo" class="form-control" placeholder="Tipo de huella">
+              </div>
+              <div class="ln_solid"></div>
+              <div class="form-group row">
+                <div class="col-md-12 col-sm-12  offset-md-3">
+                  <button onclick="limpiarCampos()" class="btn btn-secondary">Limpiar Campos</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Resultados Obtenidos <small>(coincidencias encontradas)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Codigo de Huella</th>
+                    <th>Persona Identificada</th>
+                    <th>% Coincidencia</th>
+                    <th>Visualizar</th>
+                  </tr>
+                </thead>
+                <tbody id="resultados">
+                  <!-- Aquí se llenarán los resultados -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Spinner -->
+<div id="spinner" class="spinner" style="display: none;">
+  <div class="spinner-icon"></div>
+  <p class="spinner-text">Cargando...</p>
+  <p class="spinner-text">Aplicando Algoritmos</p>
+</div>
+<!-- Modal para visualizar imágenes -->
+<div class="modal fade" id="modalVisualizar" tabindex="-1" role="dialog" aria-labelledby="modalVisualizarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVisualizarLabel">Visualizar Resultados</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Huella Ingresada</h5>
+            <img id="modalProcessedImage" src="#" alt="Imagen de Entrada" style="max-width: 100%; max-height: 500px;">
+          </div>
+          <div class="col-md-6">
+            <h5>Huella Encontrada</h5>
+            <img id="modalProcessedInputImage" src="#" alt="Imagen Procesada" style="max-width: 100%; max-height: 500px;">
+          </div>
+        </div>
+        <input type="hidden" id="nivelCoincidencia">
+        <input type="hidden" id="personaIdentificada">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="generarPDF()">Generar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS para el Spinner -->
+<style>
+  .spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+}
+
+.spinner-icon {
+    border: 0.5rem solid rgba(0, 0, 0, 0.1);
+    border-top: 0.5rem solid #007bff;
+    border-radius: 50%;
+    width: 6rem; /* Tamaño del spinner */
+    height: 6rem; /* Tamaño del spinner */
+    animation: spin 1s linear infinite;
+}
+
+.spinner-text {
+    margin-top: 1rem; /* Espacio entre el spinner y el texto */
+    text-align: center;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  var processedImageData = null;
+
+  document.getElementById('imageInput').onchange = function(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      var output = document.getElementById('originalImage');
+      output.src = reader.result;
+      output.style.display = 'block';
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  function processImage() {
+    var file = document.getElementById('imageInput').files[0];
+    var formData = new FormData();
+    formData.append('imagen', file);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    document.getElementById('spinner').style.display = 'block'; 
+    document.getElementById('processedImage').style.display = 'none'; // Ocultar la imagen procesada inicialmente
+
+    fetch('{% url "procesar_imagen" %}', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner
+        processedImageData = data;
+        document.getElementById('processedImage').src = 'data:image/png;base64,' + data['imagen'];
+        document.getElementById('processedImage').style.display = 'block';
+        document.getElementById('inputNumeroPuntos').value = data['nucleo'];
+        document.getElementById('NumeroPuntos').value = data['puntos'];
+        document.getElementById('tipo').value = data['classificacion'];
+        buscarYDesplegarResultados(data);
+    })
+    .catch(error => {
+        document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner en caso de error
+        console.error('Error:', error);
+    });
+}
+
+function buscarYDesplegarResultados(data) {
+    var resultados = data.resultados_comparacion; 
+    var tablaResultados = document.getElementById('resultados'); 
+
+    tablaResultados.innerHTML = '';
+
+    resultados.forEach(function(resultado) {
+        var fila = tablaResultados.insertRow();
+        var celdaCodigoCaso = fila.insertCell(0);
+        var celdaPersonaIdentificada = fila.insertCell(1);
+        var celdaPorcentajeCoincidencia = fila.insertCell(2);
+        var celdaVisualizar = fila.insertCell(3);
+
+        celdaCodigoCaso.textContent = resultado.huella_id; 
+        celdaPersonaIdentificada.textContent = resultado.persona ? resultado.persona : 'Sin Identificar';
+        celdaPorcentajeCoincidencia.textContent = resultado.porcentaje_coincidencia.toFixed(2) + '%';
+        celdaVisualizar.innerHTML = `<button onclick="visualizarHuella(${resultado.huella_id}, ${resultado.porcentaje_coincidencia}, '${resultado.persona}')"
+                                     class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>`;
+    });
+}
+
+function visualizarHuella(huellaId, coincidencia, persona) {
+  fetch(`/ruta-para-obtener-imagenes/${huellaId}/`)
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('error');
+      }
+      return response.json();
+  })
+  .then(data => {
+      // Mostrar la imagen de entrada en el modal
+      document.getElementById('modalProcessedInputImage').src = data.urlMinucias;
+      
+      // Mostrar la imagen procesada en el modal
+      document.getElementById('modalProcessedImage').src = document.getElementById('processedImage').src;
+
+      // Almacenar los datos de coincidencia y persona implicada en los elementos ocultos
+      document.getElementById('nivelCoincidencia').value = coincidencia;
+      document.getElementById('personaIdentificada').value = persona;
+
+      // Mostrar el modal
+      $('#modalVisualizar').modal('show');
+  })
+  .catch(error => {
+      console.error('Error al obtener las imágenes:', error);
+  });
+}
+
+function generarPDF() {
+  // Obtener las rutas de las imágenes del modal
+  const imagenOriginal = document.getElementById('modalProcessedImage').src;
+  const imagenProcesada = document.getElementById('modalProcessedInputImage').src;
+  const nivelCoincidencia = document.getElementById('nivelCoincidencia').value;
+  const personaIdentificada = document.getElementById('personaIdentificada').value;
+
+  // Enviar las rutas al endpoint para generar el PDF
+  fetch("{% url 'generar_pdf' %}?imagen_original=" + encodeURIComponent(imagenOriginal) + "&imagen_procesada=" + encodeURIComponent(imagenProcesada) + "&nivel_coincidencia=" + encodeURIComponent(nivelCoincidencia) + "&persona_identificada=" + encodeURIComponent(personaIdentificada))
+    .then(response => {
+      if (response.ok) {
+        response.blob().then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          window.open(url, '_blank');
+          window.URL.revokeObjectURL(url);
+        });
+      } else {
+        console.error('Error al generar el PDF');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function limpiarCampos() {
+  document.getElementById('originalImage').style.display = 'none';
+  document.getElementById('processedImage').style.display = 'none';
+  document.getElementById('imageInput').value = '';
+  document.getElementById('NumeroPuntos').value = '';
+  document.getElementById('tipo').value = '';
+  document.getElementById('inputNumeroPuntos').value = '';
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+
+<!-- page content -->
+
+<div class="right_col" role="main">
+  <h1>Asignar Rol</h1>
+  <div class="col-md-3 col-sm-12 ">
+    </div>
+    <div class="col-md-6 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Asignar o Cambiar Rol de Usuario<small></small></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <br />
+                <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="{% url 'listar_rol' %}">
+                    {% csrf_token %}
+                    <div class="item form-group">
+                      <label class="col-form-label col-md-4 col-sm-3 label-align" for="username">Usuario <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 ">
+                          <select id="username" name="username" required="required" class="form-control">
+                              {% for user in users %}
+                                  <option value="{{ user.id }}">{{ user.username }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                    </div>
+                    <div class="item form-group">
+                      <label class="col-form-label col-md-4 col-sm-3 label-align" for="role">Rol<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 ">
+                          <select id="role" name="role" required="required" class="form-control">
+                              {% for role in roles %}
+                                  <option value="{{ role }}">{{ role }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                    </div>
+                    
+                    <div class="clearfix"><br></br></div>
+                    <div class="item form-group">
+                      <div class="col-md-12 col-sm-12 offset-md-3">
+                          <button class="btn btn-primary" type="reset">Limpiar</button>
+                          <button type="submit" class="btn btn-success">Aceptar</button>
+                      </div>
+                    </div>
+                  </form>
+                  
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
