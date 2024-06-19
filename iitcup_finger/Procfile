@@ -1,0 +1,1 @@
+web gunicorn iitcup_finger.wsgi --log-file -
