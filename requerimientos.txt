@@ -1,5 +1,4 @@
 asgiref==3.7.2
-chardet==5.2.0
 contourpy==1.2.1
 cycler==0.12.1
 Django==5.0.1
