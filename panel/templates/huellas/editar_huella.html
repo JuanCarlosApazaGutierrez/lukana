@@ -1,0 +1,481 @@
+{% extends 'index_master.html' %}
+{% block content %}
+<div class="right_col" role="main">
+  <h1>Buscar Coincidencias</h1>
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Selecciona una huella <small>(para buscarla en la base de datos)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container ">
+          <div class="row">
+            <div class="col-md-4">
+              <div>Huella Original</div>
+              <div class="border img-container" style="width: 100%; height: 500px; position: relative;">
+                <!-- Imagen Original -->
+                <img id="originalImage" src="#" alt="Imagen Original" style="max-width: 100%; max-height: 500px; display: none;">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div>Huella Procesada</div>
+              <div class="border" style="width: 100%; height: 500px;">
+                <!-- Imagen Procesada -->
+                <img id="processedImage" src="#" alt="Imagen Procesada" style="max-width: 100%; max-height: 500px; display: none;">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="col-form-label col-md-12 col-sm-3">Selecciona una Huella</label>
+              <div class="mb-3">
+                <input class="form-control" type="file" id="imageInput" class="form-control">
+              </div>
+              
+              <div class="mb-3">
+                <button onclick="enablePointSelection()" class="btn btn-secondary btn-block"><i class="fa fa-dot-circle-o"></i> Seleccionar Punto Manualmente</button>
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3">Nucleo de la Huella</label>
+              <div class="mb-3">
+                <input type="text" id="inputNumeroPuntos" class="form-control" placeholder="Coordenadas">
+                <input type="hidden" id="inputNumeroPuntosx" class="form-control" placeholder="Coordenadas">
+                <input type="hidden" id="inputNumeroPuntosy" class="form-control" placeholder="Coordenadas">
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3">Cantidad de puntos</label>
+              <div class="mb-3">
+                <input type="text" id="NumeroPuntos" class="form-control" placeholder="Cantidad encontrada">
+              </div>
+              <label class="col-form-label col-md-12 col-sm-3">Tipo de huella</label>
+              <div class="mb-3">
+                <input type="text" id="tipo" class="form-control" placeholder="Tipo de huella">
+              </div>
+              <div class="ln_solid"></div>
+              <div class="form-group ">
+                <div class="col-md-12 ">
+                  <button onclick="limpiarCampos()" class="btn btn-danger"><i class="fa fa-eraser"></i> Limpiar Campos</button>
+                  <button onclick="processImage()" class="btn btn-primary ">Cargar y Procesar</button>
+                  <button onclick="mostrarResultadosEnTabla()" class="btn btn-success">Buscar coincidencias</button>
+                </div>
+                <div class="col-md-12 ">
+                  
+                 
+                </div>
+                
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% comment %} <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Busqueda personalizada <small>(Seleccione el tipo de busqueda caso contrario el cotejo sera con toda la base de datos)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-12">
+                <label>Seleccione una de las siguientes opciones:</label>
+              </div>
+              <div class="col-md-6 col-sm-6 text-center">
+                <div class="radio col-md-6 col-sm-6">
+                  <label>
+                    <input type="radio" name="tipoCaso" id="busquedaCaso" value="busquedaCaso" onclick="actualizarSelect()"> Búsqueda por Tipo de Caso
+                  </label>
+                </div>
+                
+                <div class="radio col-md-6 col-sm-6">
+                  <label>
+                    <input type="radio" name="tipoCaso" id="busquedaSexo" value="busquedaSexo" onclick="actualizarSelect()"> Búsqueda por Sexo
+                  </label>
+                </div>
+                <div class="radio col-md-6 col-sm-6">
+                  <label>
+                    <input type="radio" name="tipoCaso" id="busquedaCodigo" value="busquedaCodigo" onclick="actualizarSelect()"> Búsqueda por Código de Caso
+                  </label>
+                </div>
+                <div class="radio col-md-6 col-sm-6">
+                  <label>
+                    <input type="radio" name="tipoCaso" id="busquedaCompleta" value="busquedaCompleta" checked onclick="actualizarSelect()"> Búsqueda Completa
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3 text-center">
+                <select class="form-control" id="busqueda" name='busqueda'>
+                  <!-- Opciones se llenarán dinámicamente -->
+                </select>
+              </div>
+              <div class="col-md-3 text-center">
+                <button onclick="mostrarResultadosEnTabla()" class="btn btn-success">Buscar coincidencias</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> {% endcomment %}
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Resultados Obtenidos <small>(coincidencias encontradas)</small></h2>
+        <div class="d-flex justify-content-end">
+          <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Codigo de Huella</th>
+                    <th>Persona Identificada</th>
+                    <th>% Coincidencia</th>
+                    <th>Visualizar</th>
+                  </tr>
+                </thead>
+                <tbody id="resultados">
+                  <!-- Aquí se llenarán los resultados -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="spinner" class="spinner" style="display: none;">
+  <div class="spinner-icon"></div>
+  <p class="spinner-text">Cargando...</p>
+  <p class="spinner-text">Aplicando Algoritmos</p>
+</div>
+
+<div class="modal fade" id="modalVisualizar" tabindex="-1" role="dialog" aria-labelledby="modalVisualizarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVisualizarLabel">Visualizar Resultados</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Huella Ingresada</h5>
+            <img id="modalProcessedImage" src="#" alt="Imagen de Entrada" style="max-width: 100%; max-height: 500px;">
+          </div>
+          <div class="col-md-6">
+            <h5>Huella Encontrada</h5>
+            <img id="modalProcessedInputImage" src="#" alt="Imagen Procesada" style="max-width: 100%; max-height: 500px;">
+          </div>
+        </div>
+        <input type="hidden" id="nivelCoincidencia">
+        <input type="hidden" id="personaIdentificada">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="generarPDF()">Generar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-group .col-md-12 {
+    text-align: center;
+  }
+  
+  .img-container {
+    position: relative;
+  }
+
+  .point-marker {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: yellow;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+  }
+
+  .spinner-icon {
+    border: 0.5rem solid rgba(0, 0, 0, 0.1);
+    border-top: 0.5rem solid #007bff;
+    border-radius: 50%;
+    width: 6rem; /* Tamaño del spinner */
+    height: 6rem; /* Tamaño del spinner */
+    animation: spin 1s linear infinite;
+  }
+
+  .spinner-text {
+    margin-top: 1rem; /* Espacio entre el spinner y el texto */
+    text-align: center;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  function actualizarSelect() {
+    const tipoCaso = document.querySelector('input[name="tipoCaso"]:checked').value;
+    const selectBusqueda = document.getElementById('busqueda');
+
+    selectBusqueda.innerHTML = ''; // Limpiar opciones actuales
+
+    let opciones = [];
+
+    switch (tipoCaso) {
+      case 'busquedaCaso':
+        opciones = [
+          'Casos Penales',
+          'Casos de Seguridad y Terrorismo',
+          'Casos Civiles',
+          'Casos Laborales y Administrativos',
+          'Casos de Familia'
+        ];
+        selectBusqueda.disabled = false;
+        break;
+      case 'busquedaSexo':
+        opciones = [
+          'Masculino',
+          'Femenino'
+        ];
+        selectBusqueda.disabled = false;
+        break;
+      case 'busquedaCodigo':
+        opciones = []; // Se llenará con opciones generadas por Django
+        selectBusqueda.disabled = false;
+        break;
+      case 'busquedaCompleta':
+        opciones = ['Búsqueda Completa'];
+        selectBusqueda.disabled = true;
+        break;
+    }
+
+    if (tipoCaso === 'busquedaCodigo') {
+      // Aquí se utilizarán las opciones generadas por Django
+      const djangoOptions = `
+        {% for caso in casos_activos %}
+          <option value="{{ caso.codigo_caso }}">{{ caso.codigo_caso }}</option>
+        {% endfor %}
+      `;
+      selectBusqueda.innerHTML = djangoOptions;
+    } else {
+      opciones.forEach(opcion => {
+        const optionElement = document.createElement('option');
+        optionElement.value = opcion;
+        optionElement.textContent = opcion;
+        selectBusqueda.appendChild(optionElement);
+      });
+    }
+  }
+
+  window.onload = actualizarSelect; 
+
+  var processedImageData = null;
+  var pointSelectionEnabled = false;
+
+  document.getElementById('imageInput').onchange = function(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      var output = document.getElementById('originalImage');
+      output.src = reader.result;
+      output.style.display = 'block';
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  function processImage() {
+    var file = document.getElementById('imageInput').files[0];
+    if (!file) {
+      alert('Primero debes procesar una imagen.');
+      return;
+    }
+    var coordenadasx = document.getElementById('inputNumeroPuntosx').value;
+    var coordenadasy = document.getElementById('inputNumeroPuntosy').value;
+    var formData = new FormData();
+    formData.append('imagen', file);
+    formData.append('selected_x', coordenadasx);
+    formData.append('selected_y', coordenadasy);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    
+    document.getElementById('spinner').style.display = 'block'; 
+    document.getElementById('processedImage').style.display = 'none'; // Ocultar la imagen procesada inicialmente
+    
+    fetch('{% url "procesar_imagen" %}', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner
+      processedImageData = data;
+      document.getElementById('processedImage').src = 'data:image/png;base64,' + data['imagen'];
+      document.getElementById('processedImage').style.display = 'block';
+      document.getElementById('inputNumeroPuntos').value = data['nucleo'];
+      document.getElementById('NumeroPuntos').value = data['puntos'];
+      document.getElementById('tipo').value = data['classificacion'];
+    })
+    .catch(error => {
+      document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner en caso de error
+      console.error('Error:', error);
+    });
+  }
+
+  function enablePointSelection() {
+    pointSelectionEnabled = true;
+    document.getElementById('originalImage').style.cursor = 'crosshair';
+  }
+
+  document.getElementById('originalImage').onclick = function(event) {
+  if (!pointSelectionEnabled) {
+    return;
+  }
+
+  var rect = event.target.getBoundingClientRect();
+  var x = event.clientX - rect.left;
+  var y = event.clientY - rect.top;
+
+  var marker = document.createElement('div');
+  marker.className = 'point-marker';
+  marker.style.left = x + 'px';
+  marker.style.top = y + 'px';
+  event.target.parentElement.appendChild(marker);
+
+  // Mostrar coordenadas en el campo inputNumeroPuntos
+  document.getElementById('inputNumeroPuntos').value = `(${x},${y})`;
+  document.getElementById('inputNumeroPuntosx').value = x;
+  document.getElementById('inputNumeroPuntosy').value = y;
+
+  pointSelectionEnabled = false;
+  document.getElementById('originalImage').style.cursor = 'default';
+};
+
+  function mostrarResultadosEnTabla() {
+    if (!processedImageData) {
+      alert('Primero debes procesar una imagen.');
+      return;
+    }
+
+    buscarYDesplegarResultados(processedImageData);
+  }
+
+  function buscarYDesplegarResultados(data) {
+    var resultados = data.resultados_comparacion; 
+    var tablaResultados = document.getElementById('resultados'); 
+    tablaResultados.innerHTML = '';
+
+    resultados.forEach(function(resultado) {
+      var fila = tablaResultados.insertRow();
+      var celdaCodigoCaso = fila.insertCell(0);
+      var celdaPersonaIdentificada = fila.insertCell(1);
+      var celdaPorcentajeCoincidencia = fila.insertCell(2);
+      var celdaVisualizar = fila.insertCell(3);
+
+      celdaCodigoCaso.textContent = resultado.huella_id; 
+      celdaPersonaIdentificada.textContent = resultado.persona ? resultado.persona : 'Sin Identificar';
+      celdaPorcentajeCoincidencia.textContent = resultado.porcentaje_coincidencia.toFixed(2) + '%';
+      celdaVisualizar.innerHTML = `<button onclick="visualizarHuella(${resultado.huella_id}, ${resultado.porcentaje_coincidencia}, '${resultado.persona}')"
+                                     class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>`;
+    });
+  }
+
+  function visualizarHuella(huellaId, coincidencia, persona) {
+    fetch(`/ruta-para-obtener-imagenes/${huellaId}/`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('modalProcessedInputImage').src = data.urlMinucias;
+      document.getElementById('modalProcessedImage').src = document.getElementById('processedImage').src;
+      document.getElementById('nivelCoincidencia').value = coincidencia;
+      document.getElementById('personaIdentificada').value = persona;
+      $('#modalVisualizar').modal('show');
+    })
+    .catch(error => {
+      console.error('Error al obtener las imágenes:', error);
+    });
+  }
+
+  function generarPDF() {
+    const imagenOriginal = document.getElementById('modalProcessedImage').src;
+    const imagenProcesada = document.getElementById('modalProcessedInputImage').src;
+    const nivelCoincidencia = document.getElementById('nivelCoincidencia').value;
+    const personaIdentificada = document.getElementById('personaIdentificada').value;
+
+    fetch("{% url 'generar_pdf' %}?imagen_original=" + encodeURIComponent(imagenOriginal) + "&imagen_procesada=" + encodeURIComponent(imagenProcesada) + "&nivel_coincidencia=" + encodeURIComponent(nivelCoincidencia) + "&persona_identificada=" + encodeURIComponent(personaIdentificada))
+    .then(response => {
+      if (response.ok) {
+        const filename = getFilenameFromResponseHeader(response);
+        response.blob().then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = blobUrl;
+          a.download = filename; 
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(blobUrl);
+          document.body.removeChild(a);
+        });
+      } else {
+        console.error('Error al generar el PDF');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  function getFilenameFromResponseHeader(response) {
+    const contentDisposition = response.headers.get('Content-Disposition');
+    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(contentDisposition);
+      if (matches != null && matches[1]) {
+        return matches[1].replace(/['"]/g, '');
+      }
+    }
+    return 'archivo.pdf'; 
+  }
+
+  function limpiarCampos() {
+    document.getElementById('originalImage').style.display = 'none';
+    document.getElementById('processedImage').style.display = 'none';
+    document.getElementById('imageInput').value = '';
+    document.getElementById('NumeroPuntos').value = '';
+    document.getElementById('tipo').value = '';
+    document.getElementById('inputNumeroPuntos').value = '';
+    document.getElementById('resultados').innerHTML = '';
+    var pointMarkers = document.querySelectorAll('.point-marker');
+    pointMarkers.forEach(function(marker) {
+    marker.remove();
+  });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,258 @@
+
+{% extends 'index_master.html' %}
+{% block content %}
+    <div class="right_col" role="main">
+      <h1>Agregar Sospechosos</h1>
+      <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Llena todos los campos<small>Primero selecciona un Caso para agregar un implicado </small></h2>
+            <div class="d-flex justify-content-end">
+              <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+              <div class="row">
+                  <div class="col-sm-12">
+                      <form action="agregar_implicado" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %}
+                          <div class="row">
+                                  <div class="col-md-8">
+                                    
+                                      <h2>Datos del Caso</h2>
+                                    
+                                    <div class="form-group col-md-6">
+                                      <label for="caso_seleccionar">Seleccionar Caso:</label>
+                                      <select id="codigo_caso_select" name="caso_seleccionar" class="form-control">
+                                        <option>Selecciona el caso registrado...</option>
+                                        {% for caso in casos_activos %}
+                                          <option value="{{ caso.id_caso }}">{{ caso.codigo_caso }}</option>
+                                        {% endfor %}
+                                      </select>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                      <label for="estado_implicado">Estado del Implicado:</label>
+                                      <input type="text" class="form-control" id="estado_implicado" name="estado_implicado">
+                                  </div>
+                                 <br></br><br></br>
+                                  <h2>Datos del Implicado</h2>
+                                  <div class="form-group col-md-4">
+                                      <label for="implicado_nombres">Nombres:</label>
+                                      <input type="text" class="form-control" id="implicado_nombres" name="implicado_nombres">
+                                  </div>
+                                  <div class="form-group col-md-4">
+                                      <label for="implicado_apellido_paterno">Apellido Paterno:</label>
+                                      <input type="text" class="form-control" id="implicado_apellido_paterno" name="implicado_apellido_paterno">
+                                  </div>
+                                  <div class="form-group col-md-4">
+                                      <label for="implicado_apellido_materno">Apellido Marterno:</label>
+                                      <input type="text" class="form-control" id="implicado_apellido_materno" name="implicado_apellido_materno">
+                                  </div>
+                                  <div class="form-group col-md-4">
+                                      <label for="implicado_carnet">Carnet de Identidad:</label>
+                                      <input type="text" class="form-control" id="implicado_carnet" name="implicado_carnet">
+                                  </div>
+                                  <div class="form-group  col-md-2">
+                                      <label for="implicado_expedido">Expedido:</label>
+                                      <input type="text" class="form-control" id="implicado_expedido" name="implicado_expedido">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                      <label for="implicado_fecha_nacimiento">Fecha de Nacimiento:</label>
+                                      <input type="date" class="form-control" id="implicado_fecha_nacimiento" name="implicado_fecha_nacimiento">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                      <label for="implicado_lugar_nacimiento">Lugar de Nacimiento:</label>
+                                      <input type="text" class="form-control" id="implicado_lugar_nacimiento" name="implicado_lugar_nacimiento">
+                                  </div>
+                                  <div class="form-group  col-md-6">
+                                      <label for="implicado_direccion">Direccion:</label>
+                                      <input type="text" class="form-control" id="implicado_direccion" name="implicado_direccion">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                      <label for="implicado_nacionalidad">Nacionalidad:</label>
+                                      <input type="text" class="form-control" id="implicado_nacionalidad" name="implicado_nacionalidad">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                    <label for="implicado_ocupacion">Ocupacion:</label>
+                                    <input type="text" class="form-control" id="implicado_ocupacion" name="implicado_ocupacion">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                    <label for="implicado_color_pelo">Color de Pelo:</label>
+                                    <input type="text" class="form-control" id="implicado_color_pelo" name="implicado_color_pelo">
+                                  </div>
+                                  <div class="form-group  col-md-3">
+                                    <label for="implicado_color_piel">Color de piel:</label>
+                                    <input type="text" class="form-control" id="implicado_color_piel" name="implicado_color_piel">
+                                  </div>
+                                  <div class="form-group  col-md-2">
+                                    <label for="implicado_peso">Peso (Kg):</label>
+                                    <input type="text" class="form-control" id="implicado_peso" name="implicado_peso">
+                                  </div>
+                                  <div class="form-group  col-md-2">
+                                    <label for="implicado_altura">Altura (m):</label>
+                                    <input type="text" class="form-control" id="implicado_altura" name="implicado_altura">
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                    <label for="implicado_sexo">Sexo:</label>
+                                    <select class="form-control" id="implicado_sexo" name="implicado_sexo">
+                                      <option value="Masculino">Masculino</option>
+                                      <option value="Femenino">Femenino</option>
+                                    </select>
+                                  </div>
+                            </div>
+                              <div class="col-md-4">
+                              <div class="col-md-12">
+                                  <h2>Cargar Huellas del Implicado</h2>
+                                  <div class="form-group">
+                                      <label for="huella_pulgar">Cargar Pulgar:</label>
+                                      <input type="file" class="form-control-file" accept="image/png, image/bmp, image/jpeg" id="huella_pulgar" name="huella_pulgar">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="huella_indice">Cargar Índice:</label>
+                                      <input type="file" class="form-control-file" accept="image/png, image/bmp, image/jpeg" id="huella_indice" name="huella_indice">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="huella_medio">Cargar Dedo Medio:</label>
+                                    <input type="file" class="form-control-file"  accept="image/png, image/bmp, image/jpeg" id="huella_medio" name="huella_medio">
+                                </div>
+                                <div class="form-group">
+                                    <label for="huella_anular">Cargar Anular:</label>
+                                    <input type="file" class="form-control-file" accept="image/png, image/bmp, image/jpeg" id="huella_anular" name="huella_anular">
+                                </div>
+                                <div class="form-group">
+                                  <label for="huella_menique">Cargar Menique:</label>
+                                  <input type="file" class="form-control-file" accept="image/png, image/bmp, image/jpeg" id="huella_menique" name="huella_menique">
+                              </div>
+                              </div>
+                              </div>
+                          </div>
+                          <h2>Visualizar huellas</h2>
+                          <div class="row">
+                            <div class="col-md-2">
+                              <label for="huella_pulgar">Foto Pulgar</label>
+                              <div class="border img-container" style="width: 100%; height: 150px;">
+                                <img src="../media/inicio.png" id="imagenCargada1" alt="Imagen 1" style="max-width: 100%; max-height: 100%;">
+                           </div>
+                           
+                            </div>
+                            <div class="col-md-2">
+                              <label for="huella_indice">Foto Índice:</label>
+                              <div class="border img-container" style="width: 100%; height: 150px;">
+                                <img src="../media/inicio.png" id="imagenCargada2" alt="Imagen 2" style="max-width: 100%; max-height: 100%;">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <label for="huella_medio">Foto Dedo Medio:</label>
+                              <div class="border img-container" style="width: 100%; height: 150px;">
+                                <img src="../media/inicio.png" id="imagenCargada3" alt="Imagen 1" style="max-width: 100%; max-height: 100%;">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <label for="huella_anular">Foto Anular:</label>
+                              <div class="border img-container" style="width: 100%; height: 150px;">
+                                <img src="../media/inicio.png" id="imagenCargada4" alt="Imagen 2" style="max-width: 100%; max-height: 100%;">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <label for="huella_menique">Foto Menique:</label>
+                              <div class="border img-container" style="width: 100%; height: 150px;">
+                                <img src="../media/inicio.png" id="imagenCargada5" alt="Imagen 1" style="max-width: 100%; max-height: 100%;">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="ln_solid"></div>
+                            <div class="form-group row">
+                              <div class="col-md-12 col-sm-12  offset-md-4">
+                                <button type="button" class="btn btn-danger">Cancelar</button>
+                                <button class="btn btn-primary" type="reset">Limpiar</button>
+                                <button type="submit" class="btn btn-success" id="btnGuardar">
+                                  <span id="spinnerText">Guardar</span>
+                                </button>
+                              </div>
+                            </div>
+                      </form>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    
+    <script>
+      // Función para mostrar la vista previa de la imagen cargada
+      function mostrarImagen(input, imgId) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = document.getElementById(imgId);
+          img.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+      
+      // Event listeners para cada input de archivo
+      document.getElementById('huella_pulgar').addEventListener('change', function() {
+        mostrarImagen(this, 'imagenCargada1');
+      });
+      
+      document.getElementById('huella_indice').addEventListener('change', function() {
+        mostrarImagen(this, 'imagenCargada2');
+      });
+      
+      document.getElementById('huella_medio').addEventListener('change', function() {
+        mostrarImagen(this, 'imagenCargada3');
+      });
+      
+      document.getElementById('huella_anular').addEventListener('change', function() {
+        mostrarImagen(this, 'imagenCargada4');
+      });
+      
+      document.getElementById('huella_menique').addEventListener('change', function() {
+        mostrarImagen(this, 'imagenCargada5');
+      });
+    </script>
+
+    <!-- CSS para el Spinner -->
+    <style>
+      .spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1050;
+      }
+
+      .spinner-icon {
+        border: 0.5rem solid rgba(0, 0, 0, 0.1);
+        border-top: 0.5rem solid #007bff;
+        border-radius: 50%;
+        width: 6rem; /* Tamaño del spinner */
+        height: 6rem; /* Tamaño del spinner */
+        animation: spin 1s linear infinite;
+      }
+
+      .spinner-text {
+        margin-top: 1rem; /* Espacio entre el spinner y el texto */
+        text-align: center;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+
+
+    <script>
+      // Función para mostrar el spinner
+      function mostrarSpinner() {
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('spinnerText').innerText = 'Procesando...';
+      }
+    </script>
+{% endblock %}
+

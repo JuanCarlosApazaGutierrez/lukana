@@ -1,0 +1,25 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+    <!-- page content -->
+    <style>
+      .portada-image {
+          width: 100%; /* Full width of the container */
+          height: auto; /* Maintain aspect ratio */
+          max-width: 100%; /* Ensure responsiveness */
+          display: block; /* Ensure the image displays correctly */
+          margin: 0 auto; /* Center the image horizontally */
+      }
+  
+      @media (max-width: 768px) {
+          .portada-image {
+              max-width: 100%; /* Adjust this value as needed for smaller screens */
+          }
+      }
+  </style>
+    <div class="right_col" role="main">
+        <img src="./media/portada.png" alt="No Encontrada" class="portada-image">
+    </div>
+{% endblock %}
+
+

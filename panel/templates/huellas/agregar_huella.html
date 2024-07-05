@@ -1,0 +1,495 @@
+{% extends 'index_master.html' %}
+
+{% block content %}
+        <div class="right_col" role="main">
+          <h1>Agregar Huella</h1>
+            <div class="container cropper">
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Ingrese datos de la Huella<small>(del caso al que pertenece)</small></h2>
+                    <div class="d-flex justify-content-end">
+                      <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </div>
+                    
+                    <div class="clearfix"></div>
+                  
+                  </div>
+                  <div class="x_content">
+                   
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-12 col-sm-12 ">Tipo de Caso</label>
+                      <div class="col-md-12 col-sm-12 ">
+                        <div class="radio col-md-6 col-sm-6 ">
+                          <label>
+                            <input type="radio" name="tipoCaso" id="nuevoCaso" value="nuevo" checked> Nuevo Caso
+                          </label>
+                        </div>
+                        <div class="radio col-md-6 col-sm-6 ">
+                          <label>
+                            <input type="radio" name="tipoCaso" id="casoRegistrado" value="registrado"> Caso Registrado
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <form id="formAgregarHuella" action="agregar_huella" method="POST" enctype="multipart/form-data">
+                      
+                      {%csrf_token%} 
+                    
+                      <div class="form-group row" id="identificadorCasoInput">
+                        <label class="col-form-label col-md-6 col-sm-6 ">Identificador del caso</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <input type="text" id="codigo_caso" name="codigo_caso" class="form-control" placeholder="Ingresa el codigo del caso pericial policial">
+                        </div>
+                      </div>
+                      <div class="form-group row" id="identificadorCasoSelect" style="display:none;">
+                        <label class="col-form-label col-md-6 col-sm-6 ">Identificador del caso</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <select id="codigo_caso_select" name="codigo_caso" class="form-control">
+                            <option>Selecciona el caso registrado...</option>
+                            {% for caso in casos_activos %}
+                              <option value="{{ caso.id_caso }}">{{ caso.codigo_caso }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                    
+                      <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-sm-3 ">Motivo</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <input type="text" id="nombre_caso" name="nombre_caso" class="form-control" placeholder="Ingresa el nombre del caso pericial policial">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-sm-3 ">Tipo</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <select class="form-control" id="tipo" name='tipo'>
+                            <option>Selecciona un Tipo de caso...</option>
+                            <option>Casos Penales</option>
+                            <option>Casos de Seguridad y Terrorismo</option>
+                            <option>Casos Civiles</option>
+                            <option>Casos Laborales y Administrativos</option>
+                            <option>Casos de Familia</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-sm-3 ">Descripcion</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <textarea type="text" id='descripcion' name='descripcion' class="form-control" placeholder="Ingresa una descripcion del caso pericial"></textarea>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-sm-3 ">Departamento</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <select class="form-control" id="departamento" name='departamento'>
+                            <option>Selecciona una opcion...</option>
+                            <option>La Paz</option>
+                            <option>Cochabamba</option>
+                            <option>Tarija</option>
+                            <option>Santa Cruz</option>
+                            <option>Sucre</option>
+                            <option>Pando</option>
+                            <option>Beni</option>
+                            <option>Oruro</option>
+                            <option>Potosi</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-sm-3 ">Huella</label>
+                        <div class="col-md-12 col-sm-9 ">
+                          <input type="file" id="inputFile" name="file" accept="image/*" class="form-control">
+                    </div>
+                      </div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group row">
+                        <div class="col-md-9 col-sm-9  offset-md-3">
+                            <input type="file" class="sr-only" id="inputImage" name="fileeditar" accept="image/*"> 
+                        </div>
+                        <div class="col-md-9 col-sm-9  offset-md-3">
+                          <button class="btn btn-primary" type="reset" id="botonReset">Reset</button>
+                          <button type="button" id="btnEditarImagen" class="btn btn-info" data-toggle="modal" data-target="#modalCargarImagen">
+                            Editar Imagen
+                          </button>
+                          <button type="submit" class="btn btn-success" id="btnGuardar">Guardar</button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="modal fade" id="modalCargarImagen" tabindex="-1" role="dialog" aria-labelledby="modalCargarImagenLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document"> 
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalCargarImagenLabel">Editar Imagen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="col-md-12">
+                          <div class="col-md-8">
+                            <div class="img-container">
+                              <img id="image" alt="Picture">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <h4>Vista Previa</h4>
+                            <div class="docs-preview clearfix">
+                              <div class="img-preview preview-lg"></div>
+                            </div>
+                            <h4>Herramientas</h4>
+                            <div class="docs-data">
+                              <div class="col-md-3 docs-toggles">
+                                <!-- <h3 class="page-header">Toggles:</h3> -->
+                                <div class="btn-group btn-group-justified" data-toggle="buttons">
+                                  <label class="btn btn-primary active">
+                                    <input type="radio" class="sr-only" id="aspectRatio0" name="aspectRatio" value="1.7777777777777777">
+                                    <span class="docs-tooltip" data-toggle="tooltip" title="Rectangulo">
+                                      16:9
+                                    </span>
+                                  </label> 
+                                  <label class="btn btn-primary">
+                                    <input type="radio" class="sr-only" id="aspectRatio1" name="aspectRatio" value="1">
+                                    <span class="docs-tooltip" data-toggle="tooltip" title="Cuadrado">
+                                      1:1
+                                    </span>
+                                  </label>
+                                  <label class="btn btn-primary">
+                                    <input type="radio" class="sr-only" id="aspectRatio2" name="aspectRatio" value="NaN">
+                                    <span class="docs-tooltip" data-toggle="tooltip" title="Define la escala de la imagen">
+                                      Personalizado
+                                    </span>
+                                  </label>
+                                </div>
+                                <div class="col-md-9 docs-buttons">
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-primary" data-method="setDragMode" data-option="move" title="Move">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrows"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="setDragMode" data-option="crop" title="Crop">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-crop"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-search-plus"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-search-minus"></span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-primary" data-method="move" data-option="-10" data-second-option="0" title="Move Left">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrow-left"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="move" data-option="10" data-second-option="0" title="Move Right">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrow-right"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="-10" title="Move Up">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrow-up"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="10" title="Move Down">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrow-down"></span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-primary" data-method="rotate" data-option="-45" title="Rotate Left">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-rotate-left"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="rotate" data-option="45" title="Rotate Right">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-rotate-right"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="scaleX" data-option="-1" title="Flip Horizontal">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrows-h"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="scaleY" data-option="-1" title="Flip Vertical">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-arrows-v"></span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-primary" data-method="crop" title="Crop">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-check"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="clear" title="Clear">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-remove"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="disable" title="Disable">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-lock"></span>
+                                    </span>
+                                  </button>
+                                  <button type="button" class="btn btn-primary" data-method="enable" title="Enable">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      <span class="fa fa-unlock"></span>
+                                    </span>
+                                  </button>
+                                </div>
+                                <div class="btn-group btn-group-crop">
+                                  
+                                  <button type="button" class="btn btn-danger" data-method="reset" title="Reset"style="margin:1px">
+                                    <span class="docs-tooltip" data-toggle="tooltip" >
+                                      Limpiar 
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnGuardarCambios" class="btn btn-primary">Guardar Cambios</button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+             
+
+
+            <div class="row">
+              <div class="col-md-9 docs-buttons">
+                <!-- Show the cropped image in modal -->
+                <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="getCroppedCanvasTitle"></h4>
+                      </div>
+                      <div class="modal-body"></div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <a class="btn btn-primary" id="download" href="javascript:void(0);" download="cropped.png">Download</a>
+                      </div>
+                    </div>
+                  </div>
+                </div><!-- /.modal -->
+              </div><!-- /.docs-buttons -->
+              {% if r %}
+              <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="successModalLabel">Éxito</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      {{ r }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              {% if r2 %}
+              <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      {{ r2 }}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+        </form>
+        </div>
+        <div id="spinner" class="spinner" style="display: none;">
+          <div class="spinner-icon"></div>
+          <p class="spinner-text">Cargando...</p>
+          <p class="spinner-text">Aplicando Algoritmos</p>
+        </div>
+        <!-- CSS para el Spinner -->
+         
+        <style>
+          .spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+        }
+
+        .spinner-icon {
+            border: 0.5rem solid rgba(0, 0, 0, 0.1);
+            border-top: 0.5rem solid #007bff;
+            border-radius: 50%;
+            width: 6rem; /* Tamaño del spinner */
+            height: 6rem; /* Tamaño del spinner */
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-text {
+            margin-top: 1rem; /* Espacio entre el spinner y el texto */
+            text-align: center;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        </style>
+        <script>
+          
+          document.addEventListener('DOMContentLoaded', function() {
+            var inputFile = document.querySelector('input[name="file"]');
+            var imgContainer = document.getElementById('image');
+          
+            inputFile.addEventListener('change', function() {
+              var file = this.files[0];
+              if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  imgContainer.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+              }
+            });
+          
+            function ajustarFormulario() {
+              var esCasoRegistrado = document.getElementById('casoRegistrado').checked;
+              document.getElementById('identificadorCasoInput').style.display = esCasoRegistrado ? 'none' : 'block';
+              document.getElementById('identificadorCasoSelect').style.display = esCasoRegistrado ? 'block' : 'none';
+          
+              var campos = document.querySelectorAll('#nombre_caso, #descripcion, #departamento, #tipo');
+              campos.forEach(function(campo) {
+                campo.disabled = esCasoRegistrado;
+              });
+              document.getElementById('codigo_caso_select').disabled = !esCasoRegistrado;
+          
+              $(document).ready(function() {
+                $('#codigo_caso_select').change(function() {
+                  var codigoCaso = $(this).val();
+                  if (codigoCaso) {
+                    $.ajax({
+                      url: '{% url "obtener_detalle_caso" %}',
+                      data: {'codigo_caso': codigoCaso},
+                      success: function(data) {
+                        $('#nombre_caso').val(data.nombre_caso);
+                        $('#descripcion').val(data.descripcion);
+                        $('#tipo').val(data.tipo);
+                        $('#departamento').val(data.departamento);
+                      },
+                      error: function(xhr, status, error) {
+                        console.error("Error al obtener los detalles del caso");
+                      }
+                    });
+                  } else {
+                    $('#nombre_caso').val('');
+                    $('#descripcion').val('');
+                    $('#departamento').val('');
+                    $('#tipo').val('');
+                  }
+                });
+              });
+            }
+          
+            ajustarFormulario();
+          
+            document.getElementById('nuevoCaso').addEventListener('change', ajustarFormulario);
+            document.getElementById('casoRegistrado').addEventListener('change', ajustarFormulario);
+            document.getElementById('btnEditarImagen').addEventListener('click', function() {
+              var fileInput = document.querySelector('input[name="file"]');
+              var fileEditInput = document.querySelector('input[name="fileeditar"]');
+          
+              if (fileInput.files.length > 0) {
+                fileEditInput.files = fileInput.files;
+              }
+            });
+          
+            $('#btnGuardar').click(function() {
+              var cropperData = $('#image').cropper('getCroppedCanvas').toDataURL('image/jpeg');
+              document.getElementById('spinner').style.display = 'block'; // Mostrar el spinner
+          
+              fetch(cropperData)
+                .then(res => res.blob())
+                .then(blob => {
+                  var file = new File([blob], "nombreDeArchivo.jpg", {type: "image/jpeg"});
+                  var formData = new FormData();
+                  formData.append('file', file);
+          
+                  $('#formAgregarHuella').find('input, select, textarea').not(':input[type=file]').each(function() {
+                    formData.append($(this).attr('name'), $(this).val());
+                  });
+          
+                  $.ajax({
+                    url: '{% url "agregar_huella" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                      $('#modalCargarImagen').modal('hide');
+                      $('#inputFile').val('');
+                      $('#nombreArchivoSeleccionado').text(' editado seleccionado');
+                      document.getElementById('spinner').style.display = 'none'; // Ocultar el spinner
+                    },
+                    error: function(xhr, status, error) {
+                      console.error('Error al guardar la imagen', error);
+                    }
+                  });
+                });
+            });
+          });
+          
+          </script>
+          
+          
+          
+       
+{% endblock %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+

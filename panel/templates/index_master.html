@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title>Sistema IITCUP-LUKANA </title>
+
+    <!-- Bootstrap -->
+    <link href="{% static '/FrWork/admin_lte/vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static '/FrWork/admin_lte/vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static '/FrWork/admin_lte/vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="{% static '/FrWork/admin_lte/vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+	
+    <!-- bootstrap-progressbar -->
+    <link href="{% static '/FrWork/admin_lte/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="{% static '/FrWork/admin_lte/vendors/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="{% static '/FrWork/admin_lte/vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+    <!-- bootstrap-datetimepicker -->
+    <link href="{% static '/FrWork/admin_lte/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css' %}" rel="stylesheet">
+    
+    <!-- Ion.RangeSlider -->
+    <link href="{% static '/FrWork/admin_lte/vendors/normalize-css/normalize.css' %}" rel="stylesheet">
+    <link href="{% static '/FrWork/admin_lte/vendors/ion.rangeSlider/css/ion.rangeSlider.css' %}" rel="stylesheet">
+    <link href="{% static '/FrWork/admin_lte/vendors/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css' %}" rel="stylesheet">
+    
+    <link href="{% static '/FrWork/admin_lte/vendors/cropper/dist/cropper.min.css' %}" rel="stylesheet"/>
+
+    <!-- Custom Theme Style -->
+    <link href="{% static '/FrWork/admin_lte/build/css/custom.min.css' %}" rel="stylesheet">
+    
+
+    <link href="{% static 'FrWork/admin_lte/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'FrWork/admin_lte/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'FrWork/admin_lte/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'FrWork/admin_lte/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="inicio" class="site_title"><i class="fa fa-user-secret"></i> <span>IITCUP-LUKANA</span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="col-sm-1"></div>
+              <div class="profile_info">
+                <span>Bienvenido,</span>
+                
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
+
+            <br />
+
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                  <li><a href="inicio"><i class="fa fa-home"></i> Inicio </a>
+                    
+                  </li>
+                  <li><a><i class="fa fa-users"></i> Peritos Investigativos <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="agregar"><i class="fa fa-user-plus"></i>Agregar</a></li>
+                      <li><a href="listar"><i class="fa fa-user"></i>Listar</a></li>
+                      <li><a href="listar_rol"><i class="fa fa-user"></i>Roles</a></li>
+                      
+                    </ul>
+                  </li>
+                  
+                </ul>
+              </div>
+              <div class="menu_section">
+                <h3>Casos Investigativos</h3>
+                <ul class="nav side-menu">
+                  <li><a><i class="fa fa-gavel"></i> Gestionar casos <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="listar_caso"><i class="fa fa-navicon"></i>Listar Casos</a></li>
+                      <li><a href="agregar_caso"><i class="fa fa-clipboard"></i>Agregar Caso</a></li>
+                      <li><a href="agregar_implicado"><i class="fa fa-user-secret"></i>Agregar Implicado</a></li>
+                      <li><a href="listar_implicado"><i class="fa fa-navicon"></i>Listar Implicado</a></li>
+                    </ul>
+                  </li>
+                   </ul>
+              </div>
+              <div class="menu_section">
+                <h3>Huellografia</h3>
+                <ul class="nav side-menu">
+                  <li><a><i class="fa fa-hand-o-right"></i> Huellas Dactilares <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="listar_huella"><i class="fa fa-list-alt"></i>Listar Huellas</a></li>
+                      <li><a href="agregar_huella"><i class="fa fa-files-o"></i>Agregar Huella</a></li>
+                      <li><a href="editar_huella"><i class="fa fa-search"></i>Buscar Huella</a></li>
+                      {% comment %} <li><a href="comparar_huella"><i class="fa fa-columns"></i>Comparar Huellas</a></li> {% endcomment %}
+                    </ul>
+                  </li>
+                  
+                  
+                   </ul>
+              </div>
+              <div class="sidebar-footer hidden-small">
+                  <a data-toggle="tooltip" data-placement="top" title="Settings">
+                      <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                  </a>
+                  <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                      <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                  </a>
+                  <a data-toggle="tooltip" data-placement="top" title="Lock">
+                      <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                  </a>
+                  
+                    <a href="#" data-toggle="tooltip" data-placement="top" title="Cerrar Sesion" onclick="document.getElementById('logout-form').submit();"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                 
+
+              </div>
+
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+          <div class="nav_menu">
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+              <nav class="nav navbar-nav">
+              <ul class=" navbar-right">
+                <li class="nav-item dropdown open" style="padding-left: 15px;">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                    {{ user.first_name }} {{ user.last_name }}
+                  </a>
+                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" class="dropdown-item"  href="javascript:;"> Perfil</a>
+                    <a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Cerrar Sesion" onclick="document.getElementById('logout-form').submit();"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesion</a>
+                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                    
+                  </div>
+                </li>
+
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            
+            Sistema de Reconocimiento de Huellas - IITCUP 2024 <a href="/"></a>
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static '/FrWork/admin_lte/vendors/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static '/FrWork/admin_lte/vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static '/FrWork/admin_lte/vendors/fastclick/lib/fastclick.js' %}"></script>
+    <!-- NProgress -->
+    <script src="{% static '/FrWork/admin_lte/vendors/nprogress/nprogress.js' %}"></script>
+    <!-- Chart.js -->
+    <script src="{% static '/FrWork/admin_lte/vendors/Chart.js/dist/Chart.min.js' %}"></script>
+    <!-- gauge.js -->
+    <script src="{% static '/FrWork/admin_lte/vendors/gauge.js/dist/gauge.min.js' %}"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="{% static '/FrWork/admin_lte/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+    <!-- iCheck -->
+    <script src="{% static '/FrWork/admin_lte/vendors/iCheck/icheck.min.js' %}"></script>
+    <!-- Skycons -->
+    <script src="{% static '/FrWork/admin_lte/vendors/skycons/skycons.js' %}"></script>
+    <!-- Flot -->
+    <script src="{% static '/FrWork/admin_lte/vendors/Flot/jquery.flot.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/Flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/Flot/jquery.flot.time.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/Flot/jquery.flot.stack.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/Flot/jquery.flot.resize.js' %}"></script>
+    <!-- Flot plugins -->
+    <script src="{% static '/FrWork/admin_lte/vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/flot.curvedlines/curvedLines.js' %}"></script>
+    <!-- DateJS -->
+    <script src="{% static '/FrWork/admin_lte/vendors/DateJS/build/date.js' %}"></script>
+    <!-- JQVMap -->
+    <script src="{% static '/FrWork/admin_lte/vendors/jqvmap/dist/jquery.vmap.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/jqvmap/dist/maps/jquery.vmap.world.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js' %}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="{% static '/FrWork/admin_lte/vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static '/FrWork/admin_lte/vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    
+    <script src="{% static '/FrWork/admin_lte/vendors/cropper/dist/cropper.min.js' %}"></script>
+
+    
+	
+    <!-- Datatables -->
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'FrWork/admin_lte/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+
+
+    <!-- Custom Theme Scripts -->
+    <script src="{% static '/FrWork/admin_lte/build/js/custom.min.js' %}"></script>
+  </body>
+</html>
